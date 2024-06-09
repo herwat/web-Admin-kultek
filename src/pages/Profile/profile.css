@@ -1,0 +1,60 @@
+.imgprofile{
+  width: 200px;
+  margin: 5px;
+  margin-top: 40px;
+  margin-left:50px;
+  margin-right:50px;
+}
+
+.isi{
+  --background:#f5fbfe;
+}
+
+.ContentWrapper{
+  display: flex;
+}
+
+.item{
+margin-bottom: 8px;
+}
+
+.profil{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 9px;
+border:none;
+margin:0;
+padding:0;
+}
+
+.wrap2{
+border:none;
+margin: 75px;
+margin-top: 120px;
+margin-left:40px;
+margin-right:40px;
+padding:0px;
+}
+
+.name{
+font-weight: bold;
+}
+
+.edit-button{
+color: white;
+}
+
+.text{
+margin: 16px;
+}
+
+.ubah{
+font-size: 30px;
+font-weight: bold;
+}
+
+.Edit{
+margin: 16px;
+}

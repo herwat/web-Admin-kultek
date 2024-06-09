@@ -1,0 +1,80 @@
+.ion-padding {
+    --padding-start: var(--ion-padding, 16px);
+    --padding-end: var(--ion-padding, 16px);
+    --padding-top: var(--ion-padding, 1px);
+    --padding-bottom: var(--ion-padding, 16px);
+    -webkit-padding-start: var(--ion-padding, 16px);
+    padding-inline-start: var(--ion-padding, 16px);
+    -webkit-padding-end: var(--ion-padding, 16px);
+    padding-inline-end: var(--ion-padding, 16px);
+    padding-top: var(--ion-padding, 16px);
+    padding-bottom: var(--ion-padding, 16px);
+}
+
+.ion-toolbar.sc-ion-searchbar-md-h, ion-toolbar .sc-ion-searchbar-md-h {
+    -webkit-padding-start: 7px;
+    padding-inline-start: 7px;
+    -webkit-padding-end: 7px;
+    padding-inline-end: 60px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.searchbar-input.sc-ion-searchbar-md {
+    -webkit-padding-start: 45px;
+    padding-inline-start: 45px;
+    -webkit-padding-end: 45px;
+    padding-inline-end: 45px;
+    padding-top: 10px;
+    padding-bottom: 6px;
+    background-position: left 40px center;
+    background-position-x: left 20px;
+    background-position-y: center;
+    height: auto;
+    font-size: 15px;
+    font-weight: 200;
+    line-height: 30px;
+    text-align: left;
+    background-color: whitesmoke;
+}
+
+.text01{
+    text-align: center;
+    margin-top: 40px;
+    
+}
+
+.sapaan{
+    text-align: center;
+    margin-top: 3px;
+   
+} 
+
+.text1, .text11 {
+    padding-left: 55px;
+    font: sans-serif;
+}
+
+.text2, .text22 {
+    padding-left: 55px;
+    font: sans-serif;
+}
+
+.text3, .text33 {
+    padding-left: 55px;
+    font: sans-serif;
+}
+
+.text4 {
+    font: sans-serif;
+}
+
+.contentadmin{
+    height: 70px;
+    
+}
+
+.grafik{
+    height: 220px;
+    width: 420px;
+}

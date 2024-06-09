@@ -1,0 +1,19 @@
+.marquee-text {
+    white-space: nowrap;
+    overflow: hidden;
+    animation: marquee 50s linear 50; 
+    font-size: 30px;
+    font-family: 'Merriweather Sans';
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+

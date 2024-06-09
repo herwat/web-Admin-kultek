@@ -1,0 +1,50 @@
+.menu-slide {
+    --width: 20%;
+}
+
+#menu-slide-header {
+    padding-left: 4px;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+
+    height: 64px;
+
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    background-color: #177bb7;
+}
+
+#toogle-button {
+    --box-shadow: none;
+    --padding-top: 0px !important;
+    --padding-bottom: 0px !important;
+    --padding-start: 0px;
+    --padding-end: 0px;
+    --background-hover: rgba(255, 255, 255, 0.5);
+    --ripple-color: transparent;
+
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+
+
+    width: fit-content;
+    font-size: 28px;
+    color: white;
+}
+
+#toggle-button-icon {
+    margin-inline: 0;
+}
+
+#menu-slide-title {
+    font-size: 24px;
+    color: white;
+}
+
+.Log{
+    position: fixed;
+    bottom: 8px;
+    padding-inline: 13px;
+    margin-left: 10px;
+}
+

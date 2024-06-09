@@ -1,0 +1,7 @@
+{
+  "name": "sisfor09",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

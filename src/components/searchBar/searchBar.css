@@ -1,0 +1,8 @@
+.searchbar-input {
+    width: 800px !important;
+}
+
+#search-bar {
+    position: absolute;
+    left: calc(50% - 400px)
+}

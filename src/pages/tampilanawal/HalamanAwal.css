@@ -1,0 +1,103 @@
+/**
+ * @Author: Your name
+ * @Date:   2024-05-28 10:32:00
+ * @Last Modified by:   Your name
+ * @Last Modified time: 2024-05-29 01:08:35
+ */
+
+.container {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.IonCard {
+    background-color: none;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.);
+    border-radius: 0px;
+    overflow: hidden;
+}
+
+.logoUH {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 130px;
+    height: 150px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.intro {
+    font-family: 'Merriweather Sans', sans-serif;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    font-size: 20px;
+}
+
+.card2 {
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.);
+    border-radius: 0px;
+    overflow: hidden;
+    background-color: #E0F4FF;
+    margin-top: 170px;
+    margin-bottom: 50px;
+    margin-left: 120px;
+    margin-right: 120px;
+}
+
+.pict2 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.intro2 {
+    font-family: 'Merriweather Sans', sans-serif;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    font-size: 20px;
+}
+
+.pembuka {
+    background-color: #E0F4FF;
+    margin-top: 170px;
+    margin-bottom: 50px;
+    margin-left: 120px;
+    margin-right: 120px;
+}
+
+.pagefirst {
+    background-color: #f5fbfe;
+}
+
+.Button1 {
+    text-decoration: none;
+}
+
+.Button2 a {
+    text-decoration: none;
+}
+
+.admin-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    /* Adds 10px space between buttons */
+}
