@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { IonButton, IonContent, IonHeader, IonIcon, IonList, IonMenu, IonMenuToggle, IonTitle } from '@ionic/react';
 import "./menuSlideAdmin.css"
 import {  chevronBackOutline, homeOutline, home, speedometer, paperPlane } from "ionicons/icons"
@@ -21,8 +22,8 @@ function MenuSlideAdmin() {
                 </IonHeader>
                 <IonContent >
                     <IonList>     
-                         <MenuItem iconItem={homeOutline} iconItemFill={home} content='Home' route='/admin' />
-                         <MenuItem iconItem={speedometer} iconItemFill={speedometer} content='Dashboard' route='publikasiadmin' />
+                         <MenuItem iconItem={homeOutline} iconItemFill={home} content='Home' route='/myadmin' />
+                         <MenuItem iconItem={speedometer} iconItemFill={speedometer} content='Dashboard' route='dashboard' />
                          <MenuItem iconItem={paperPlane} iconItemFill={paperPlane} content='Request' route='daftarmahasiswa' />
                        
                     </IonList> 
@@ -41,6 +42,3 @@ function MenuSlideAdmin() {
 };
 
 export default MenuSlideAdmin;
-
-
-

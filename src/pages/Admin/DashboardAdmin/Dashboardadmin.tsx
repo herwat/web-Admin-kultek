@@ -76,7 +76,7 @@ const columnHelper = createMRTColumnHelper<Person>();
     }),
 ];
 
-const Example: React.FC = () => {
+const Dashboardadmin: React.FC = () => {
   const handleExportRows = (rows: MRT_Row<Person>[]) => {
     const doc = new jsPDF();
     const tableData = rows.map((row) => Object.values(row.original));
@@ -142,4 +142,4 @@ const Example: React.FC = () => {
   );
 };
 
-export default Example;
+export default Dashboardadmin;
