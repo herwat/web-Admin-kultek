@@ -23,7 +23,6 @@ import HomeAdmin from './pages/Admin/homeAdmin';
 import Setting from './pages/Setting';
 import LibraryMember from './pages/Library/LibraryMember';
 import HalamanAwal from './pages/tampilanawal/HalamanAwal';
-import PublikasiFile from './pages/publikasi/PublikasiFile';
 import Profile from './pages/Profile/profile';
 import Publikasiadmin from './pages/Admin/DashboardAdmin/Dashboardadmin';
 import DataNotif from './pages/Admin/Pemberitahuan/DaftarNotif';
@@ -40,7 +39,6 @@ const App: React.FC = () => (
         <Route exact path="/myadmin" component={HomeAdmin} />
         <Route exact path="/infopemberitahuan" component={DataNotif} />
         <Route exact path="/publikasiadmin" component={Publikasiadmin} />
-        <Route exact path="/publikasiSaya" component={PublikasiFile} />
         <Route exact path="/setting" component={Setting} />
         <Route exact path="/login" component={HalamanAwal} />
         <Route exact path="/PerpustakaanSaya" component={LibraryMember} />
