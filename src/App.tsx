@@ -20,12 +20,11 @@ import './theme/variables.css';
 /* Pages */
 import HomeAdmin from './pages/Admin/homeAdmin';
 import Setting from './pages/Setting';
-import LibraryMember from './pages/Library/LibraryMember';
 import HalamanAwal from './pages/tampilanawal/HalamanAwal';
 import Profile from './pages/Profile/profile';
-import Dashboardadmin from './pages/Admin/DashboardAdmin/Dashboardadmin';
-import DataNotif from './pages/Admin/Pemberitahuan/DaftarNotif';
+import Dashboardadmin from './pages/Admin/DashboardAdmin/Dashboardadmin';;
 import FormAdmin from './pages/Form/LoginAdmin';
+import requestadmin from './pages/Admin/request/requestadmin';
 
 setupIonicReact();
 
@@ -35,12 +34,11 @@ const App: React.FC = () => (
       <IonRouterOutlet>
         <Route exact path="/formAdmin" component={FormAdmin} />
         <Route exact path="/myadmin" component={HomeAdmin} />
-        <Route exact path="/infopemberitahuan" component={DataNotif} />
         <Route exact path="/dashboard" component={Dashboardadmin} />
         <Route exact path="/setting" component={Setting} />
         <Route exact path="/login" component={HalamanAwal} />
-        <Route exact path="/PerpustakaanSaya" component={LibraryMember} />
         <Route exact path="/Profile" component={Profile} />
+        <Route exact path="/request" component={requestadmin} />
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>

@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
+import { IonHeader, IonPage } from '@ionic/react';
+import ToolbarAdmin from '../../../components/toolbar/toolbarAdmin';
+import MenuSlideAdmin from '../../../components/menu-Slide/menuSlideAdmin';
+import './request.css';
 import {
   MaterialReactTable,
   useMaterialReactTable,
-  type MRT_Row,
+  MRT_Row,
   createMRTColumnHelper,
+  MRT_ColumnDef,
 } from 'material-react-table';
-import { Box, Button, Link, MenuItem, Select, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, MenuItem, Select, Typography, TextField, Modal } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { jsPDF } from 'jspdf'; //or use your library of choice here
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { data, type Person } from './data';
-import { useHistory } from 'react-router';
+import { data, Person } from './data';
 
 const columnHelper = createMRTColumnHelper<Person>();
 
-const columns = [
+const columns= [
   columnHelper.accessor('Nama', {
     header: 'Nama',
     size: 120,
@@ -39,7 +43,7 @@ const columns = [
     header: 'Status',
     size: 300,
     Cell: ({ row }) => {
-      const [status, setStatus] = useState(row.original.Status);
+      const [status, setStatus] = useState<boolean>(row.original.Status);
       return (
         <Button
           variant="contained"
@@ -54,9 +58,10 @@ const columns = [
   columnHelper.accessor('email', {
     header: 'Email',
   }),
-  columnHelper.accessor('email', {
+  {
+    accessorKey: 'aksi',
     header: 'Aksi',
-    Cell: ({ row }) => {
+    Cell: ({ row }: { row: MRT_Row<Person> }) => {
       const [open, setOpen] = useState(false);
 
       const handleOpen = () => setOpen(true);
@@ -85,7 +90,7 @@ const columns = [
             color="primary"
             onClick={handleOpen}
           >
-            Detail
+            Lihat Detail
           </Button>
           <Modal
             open={open}
@@ -123,7 +128,7 @@ const columns = [
                     Konfirmasi Hapus
                   </Typography>
                   <Typography id="confirm-modal-description" sx={{ mt: 2 }}>
-                    Apakah Anda yakin ingin menghapus data baris ini?
+                    Apakah Anda yakin ingin menghapus data ini?
                   </Typography>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
                     <Button variant="contained" color="secondary" onClick={handleDelete}>
@@ -140,7 +145,7 @@ const columns = [
         </>
       );
     },
-  }),
+  },
 ];
 
 const modalStyle = {
@@ -155,11 +160,11 @@ const modalStyle = {
   p: 4,
 };
 
-const Dashboardadmin = () => {
+const requestadmin: React.FC = () => {
   const handleExportRows = (rows: MRT_Row<Person>[]) => {
     const doc = new jsPDF();
     const tableData = rows.map((row) => Object.values(row.original));
-    const tableHeaders = columns.map((c) => c.header);
+    const tableHeaders = columns.map((c) => c.header as string);
 
     autoTable(doc, {
       head: [tableHeaders],
@@ -187,17 +192,13 @@ const Dashboardadmin = () => {
       >
         <Button
           disabled={table.getPrePaginationRowModel().rows.length === 0}
-          //export all rows, including from the next page, (still respects filtering and sorting)
-          onClick={() =>
-            handleExportRows(table.getPrePaginationRowModel().rows)
-          }
+          onClick={() => handleExportRows(table.getPrePaginationRowModel().rows)}
           startIcon={<FileDownloadIcon />}
         >
           Export All Rows
         </Button>
         <Button
           disabled={table.getRowModel().rows.length === 0}
-          //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
           onClick={() => handleExportRows(table.getRowModel().rows)}
           startIcon={<FileDownloadIcon />}
         >
@@ -207,7 +208,6 @@ const Dashboardadmin = () => {
           disabled={
             !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
           }
-          //only export selected rows
           onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
           startIcon={<FileDownloadIcon />}
         >
@@ -217,151 +217,24 @@ const Dashboardadmin = () => {
     ),
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      <MenuSlideAdmin />
+      <IonPage className="Dash">
+        <IonHeader className="Dash">
+          <ToolbarAdmin
+            pageName="Request"
+            imageLink="https://i.pinimg.com/564x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg"
+          />
+        </IonHeader>
+        <div className="table-container">
+          <MaterialReactTable table={table} />
+        </div>
+      </IonPage>
+    </>
+  );
 };
 
-export default Dashboardadmin;
-
-// import {
-//     MaterialReactTable,
-//     useMaterialReactTable,
-//     type MRT_Row,
-//     createMRTColumnHelper,
-//   } from 'material-react-table';
-//   import { Box, Button, Link, MenuItem, Select } from '@mui/material';
-//   import FileDownloadIcon from '@mui/icons-material/FileDownload';
-//   import { jsPDF } from 'jspdf'; //or use your library of choice here
-//   import autoTable from 'jspdf-autotable';
-//   import { data, type Person } from './data';
-// import { useState } from 'react';
-// import { useHistory } from 'react-router';
-  
-//   const columnHelper = createMRTColumnHelper<Person>();
-  
-//   const columns = [
-//     columnHelper.accessor('Nama', {
-//       header: 'Nama',
-//       size: 120,
-//     }),
-//     columnHelper.accessor('JenisBisnis', {
-//       header: 'Jenis Bisnis',
-//       size: 20,
-//       Cell: ({ row }) => {
-//         const [jenisBisnis, setJenisBisnis] = useState<string | null>(row.original.JenisBisnis);
-//         return (
-//           <Select
-//             value={jenisBisnis || ''}
-//             onChange={(event) => setJenisBisnis(event.target.value)}
-//           >
-//             <MenuItem value={'Warung Makanan'}>Warung Makanan</MenuItem>
-//             <MenuItem value={'Warung Berjalan'}>Warung Berjalan</MenuItem>
-//           </Select>
-//         );
-//       },
-//     }),
-//     columnHelper.accessor('Status', {
-//       header: 'Status',
-//       size: 300,
-//       Cell: ({ row }) => {
-//         const [status, setStatus] = useState(row.original.Status);
-//         return (
-//           <Button
-//             variant="contained"
-//             color={status ? 'success' : 'error'}
-//             onClick={() => setStatus(!status)}
-//           >
-//             {status ? 'Aktif' : 'Tidak Aktif'}
-//           </Button>
-//         );
-//       },
-//     }),
-//     columnHelper.accessor('email', {
-//       header: 'Email',
-//     }),
-//     columnHelper.accessor('email', {
-//       header: 'Aksi',
-//       Cell: ({ row }) => {
-//         const history = useHistory();
-//         return (
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             onClick={() => history.push('/home')}
-//           >
-//             Detail
-//           </Button>
-//         );
-//       },
-//     }),
-//   ];
-
-//   const Dashboardadmin = () => {
-//     const handleExportRows = (rows: MRT_Row<Person>[]) => {
-//       const doc = new jsPDF();
-//       const tableData = rows.map((row) => Object.values(row.original));
-//       const tableHeaders = columns.map((c) => c.header);
-  
-//       autoTable(doc, {
-//         head: [tableHeaders],
-//         body: tableData,
-//       });
-  
-//       doc.save('mrt-pdf-example.pdf');
-//     };
-  
-//     const table = useMaterialReactTable({
-//       columns,
-//       data,
-//       enableRowSelection: true,
-//       columnFilterDisplayMode: 'popover',
-//       paginationDisplayMode: 'pages',
-//       positionToolbarAlertBanner: 'bottom',
-//       renderTopToolbarCustomActions: ({ table }) => (
-//         <Box
-//           sx={{
-//             display: 'flex',
-//             gap: '16px',
-//             padding: '8px',
-//             flexWrap: 'wrap',
-//           }}
-//         >
-//           <Button
-//             disabled={table.getPrePaginationRowModel().rows.length === 0}
-//             //export all rows, including from the next page, (still respects filtering and sorting)
-//             onClick={() =>
-//               handleExportRows(table.getPrePaginationRowModel().rows)
-//             }
-//             startIcon={<FileDownloadIcon />}
-//           >
-//             Export All Rows
-//           </Button>
-//           <Button
-//             disabled={table.getRowModel().rows.length === 0}
-//             //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
-//             onClick={() => handleExportRows(table.getRowModel().rows)}
-//             startIcon={<FileDownloadIcon />}
-//           >
-//             Export Page Rows
-//           </Button>
-//           <Button
-//             disabled={
-//               !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-//             }
-//             //only export selected rows
-//             onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-//             startIcon={<FileDownloadIcon />}
-//           >
-//             Export Selected Rows
-//           </Button>
-//         </Box>
-//       ),
-//     });
-  
-//     return <MaterialReactTable table={table} />;
-//   };
-  
-//   export default Dashboardadmin;
-  
-
+export default requestadmin;
 
 

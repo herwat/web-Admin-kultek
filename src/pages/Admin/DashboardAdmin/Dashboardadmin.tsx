@@ -74,6 +74,7 @@ const columns= [
       const handleSave = () => {
         // Implement save logic here
         handleClose();
+        alert('Data berhasil diperbarui');
       };
 
       const handleDelete = () => {
