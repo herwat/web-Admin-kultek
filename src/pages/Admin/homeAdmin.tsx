@@ -8,7 +8,7 @@ import {
     IonGrid, 
     IonRow, 
     IonCol, 
-    IonText 
+    IonText
 } from '@ionic/react';
 import './homeAdmin.css';
 import ToolbarAdmin from '../../components/toolbar/toolbarAdmin';

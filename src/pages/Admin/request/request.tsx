@@ -46,7 +46,7 @@ const columns = [
           color={status ? 'success' : 'error'}
           onClick={() => setStatus(!status)}
         >
-          {status ? 'Aktif' : 'Tidak Aktif'}
+          {status ? 'Diterima' : 'Ditolak'}
         </Button>
       );
     },

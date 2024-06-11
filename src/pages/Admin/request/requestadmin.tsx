@@ -50,7 +50,7 @@ const columns= [
           color={status ? 'success' : 'error'}
           onClick={() => setStatus(!status)}
         >
-          {status ? 'Aktif' : 'Tidak Aktif'}
+          {status ? 'Diterima' : 'Ditolak'}
         </Button>
       );
     },
@@ -104,7 +104,7 @@ const columns= [
               </Typography>
               <TextField label="Nama" defaultValue={row.original.Nama} fullWidth margin="normal" />
               <TextField label="Jenis Bisnis" defaultValue={row.original.JenisBisnis} fullWidth margin="normal" />
-              <TextField label="Status" defaultValue={row.original.Status ? 'Aktif' : 'Tidak Aktif'} fullWidth margin="normal" />
+              <TextField label="Status" defaultValue={row.original.Status ? 'Diterima' : 'Ditolak'} fullWidth margin="normal" />
               <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
                 <Button variant="contained" color="primary" onClick={handleSave}>
