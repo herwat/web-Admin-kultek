@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonHeader, IonPage } from '@ionic/react';
+import { IonHeader, IonPage, IonItem, IonLabel, IonImg, IonButton } from '@ionic/react';
 import ToolbarAdmin from '../../../components/toolbar/toolbarAdmin';
 import MenuSlideAdmin from '../../../components/menu-Slide/menuSlideAdmin';
 import './request.css';
@@ -8,7 +8,6 @@ import {
   useMaterialReactTable,
   MRT_Row,
   createMRTColumnHelper,
-  MRT_ColumnDef,
 } from 'material-react-table';
 import { Box, Button, MenuItem, Select, Typography, TextField, Modal } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -18,7 +17,7 @@ import { data, Person } from './data';
 
 const columnHelper = createMRTColumnHelper<Person>();
 
-const columns= [
+const columns = [
   columnHelper.accessor('Nama', {
     header: 'Nama',
     size: 120,
@@ -63,13 +62,26 @@ const columns= [
     header: 'Aksi',
     Cell: ({ row }: { row: MRT_Row<Person> }) => {
       const [open, setOpen] = useState(false);
+      const [imageOpen, setImageOpen] = useState(false);
+      const [imageName, setImageName] = useState<string | null>(null);
+      const [image, setImage] = useState<string>('');
 
       const handleOpen = () => setOpen(true);
       const handleClose = () => setOpen(false);
+      const handleImageOpen = () => setImageOpen(true);
+      const handleImageClose = () => setImageOpen(false);
 
-      const [confirmOpen, setConfirmOpen] = useState(false);
-      const handleConfirmOpen = () => setConfirmOpen(true);
-      const handleConfirmClose = () => setConfirmOpen(false);
+      const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          setImageName(file.name);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImage(reader.result as string);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
 
       const handleSave = () => {
         // Implement save logic here
@@ -79,67 +91,54 @@ const columns= [
 
       const handleDelete = () => {
         // Implement delete logic here
-        handleConfirmClose();
         handleClose();
       };
 
       return (
         <>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpen}
-          >
+          <Button variant="contained" color="primary" onClick={handleOpen}>
             Lihat Detail
           </Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
+          <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box sx={{ ...modalStyle }}>
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 Detail Data
               </Typography>
               <TextField label="Nama" defaultValue={row.original.Nama} fullWidth margin="normal" />
               <TextField label="Jenis Bisnis" defaultValue={row.original.JenisBisnis} fullWidth margin="normal" />
+              <IonItem>
+                <IonLabel position="stacked">Upload Image</IonLabel>
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+              </IonItem>
+              {imageName && (
+                <IonItem>
+                  <IonLabel onClick={handleImageOpen} style={{ cursor: 'pointer', color: 'blue' }}>
+                    {imageName}
+                  </IonLabel>
+                </IonItem>
+              )}
               <TextField label="Status" defaultValue={row.original.Status ? 'Diterima' : 'Ditolak'} fullWidth margin="normal" />
               <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
                 <Button variant="contained" color="primary" onClick={handleSave}>
                   Save
                 </Button>
-                <Button variant="contained" color="secondary" onClick={handleConfirmOpen}>
+                <Button variant="contained" color="secondary" onClick={handleDelete}>
                   Delete
                 </Button>
                 <Button variant="contained" onClick={handleClose}>
                   Cancel
                 </Button>
               </Box>
-              <Modal
-                open={confirmOpen}
-                onClose={handleConfirmClose}
-                aria-labelledby="confirm-modal-title"
-                aria-describedby="confirm-modal-description"
-              >
-                <Box sx={{ ...modalStyle }}>
-                  <Typography id="confirm-modal-title" variant="h6" component="h2">
-                    Konfirmasi Hapus
-                  </Typography>
-                  <Typography id="confirm-modal-description" sx={{ mt: 2 }}>
-                    Apakah Anda yakin ingin menghapus data ini?
-                  </Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                    <Button variant="contained" color="secondary" onClick={handleDelete}>
-                      Yes
-                    </Button>
-                    <Button variant="contained" onClick={handleConfirmClose}>
-                      No
-                    </Button>
-                  </Box>
-                </Box>
-              </Modal>
+            </Box>
+          </Modal>
+          <Modal open={imageOpen} onClose={handleImageClose} aria-labelledby="image-modal-title" aria-describedby="image-modal-description">
+            <Box sx={{ ...modalStyle, width: '80%', maxHeight: '80%', overflow: 'auto' }}>
+              <Typography id="image-modal-title" variant="h6" component="h2">
+                Image Detail
+              </Typography>
+              <IonImg src={image} />
+              <IonButton onClick={handleImageClose}>Close</IonButton>
             </Box>
           </Modal>
         </>
@@ -182,14 +181,7 @@ const requestadmin: React.FC = () => {
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
     renderTopToolbarCustomActions: ({ table }) => (
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '16px',
-          padding: '8px',
-          flexWrap: 'wrap',
-        }}
-      >
+      <Box sx={{ display: 'flex', gap: '16px', padding: '8px', flexWrap: 'wrap' }}>
         <Button
           disabled={table.getPrePaginationRowModel().rows.length === 0}
           onClick={() => handleExportRows(table.getPrePaginationRowModel().rows)}
@@ -205,9 +197,7 @@ const requestadmin: React.FC = () => {
           Export Page Rows
         </Button>
         <Button
-          disabled={
-            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-          }
+          disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()}
           onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
           startIcon={<FileDownloadIcon />}
         >
@@ -222,10 +212,7 @@ const requestadmin: React.FC = () => {
       <MenuSlideAdmin />
       <IonPage className="Dash">
         <IonHeader className="Dash">
-          <ToolbarAdmin
-            pageName="Request"
-            imageLink="https://i.pinimg.com/564x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg"
-          />
+          <ToolbarAdmin pageName="Request" imageLink="https://i.pinimg.com/564x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg" />
         </IonHeader>
         <div className="table-container">
           <MaterialReactTable table={table} />
@@ -236,5 +223,3 @@ const requestadmin: React.FC = () => {
 };
 
 export default requestadmin;
-
-
