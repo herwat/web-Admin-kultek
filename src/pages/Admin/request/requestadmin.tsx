@@ -9,7 +9,7 @@ import {
   MRT_Row,
   createMRTColumnHelper,
 } from 'material-react-table';
-import { Box, Button, MenuItem, Select, Typography, TextField, Modal } from '@mui/material';
+import { Box, Button, MenuItem, Select, Typography, TextField, Modal, FormControl, InputLabel } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -30,7 +30,8 @@ const columns = [
       return (
         <Select
           value={jenisBisnis || ''}
-          onChange={(event) => setJenisBisnis(event.target.value)}
+          onChange={(event) => setJenisBisnis(event.target.value as string)}
+          fullWidth
         >
           <MenuItem value={'Warung Makanan'}>Warung Makanan</MenuItem>
           <MenuItem value={'Warung Berjalan'}>Warung Berjalan</MenuItem>
@@ -86,12 +87,13 @@ const columns = [
       const handleSave = () => {
         // Implement save logic here
         handleClose();
-        alert('Data berhasil diperbarui');
+        alert('request UMKM diterima');
       };
 
       const handleDelete = () => {
         // Implement delete logic here
         handleClose();
+        alert('request UMKM ditolak');
       };
 
       return (
@@ -104,8 +106,23 @@ const columns = [
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 Detail Data
               </Typography>
-              <TextField label="Nama" defaultValue={row.original.Nama} fullWidth margin="normal" />
-              <TextField label="Jenis Bisnis" defaultValue={row.original.JenisBisnis} fullWidth margin="normal" />
+              <TextField label="Nama Bisnis" defaultValue={row.original.Nama} fullWidth margin="normal" />
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="jenis-bisnis-label">Jenis Bisnis</InputLabel>
+                <Select
+                  labelId="jenis-bisnis-label"
+                  id="jenis-bisnis"
+                  defaultValue={row.original.JenisBisnis}
+                  label="Jenis Bisnis"
+                >
+                  <MenuItem value="Warung Makanan">Warung Makanan</MenuItem>
+                  <MenuItem value="Warung Berjalan">Warung Berjalan</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField label="Products" defaultValue={row.original.Nama} fullWidth margin="normal" />
+              <TextField label="Alamat" defaultValue={row.original.Status} fullWidth margin="normal" />
+              <TextField label="No.Hp" defaultValue={row.original.email} fullWidth margin="normal" />
+              <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <IonItem>
                 <IonLabel position="stacked">Upload Image/Logo UMKM</IonLabel>
                 <input type="file" accept="image/*" onChange={handleImageChange} />
@@ -117,18 +134,21 @@ const columns = [
                   </IonLabel>
                 </IonItem>
               )}
-              <TextField label="Products" defaultValue={row.original.Nama} fullWidth margin="normal" />
-              <TextField label="Status" defaultValue={row.original.Status ? 'Diterima' : 'Ditolak'} fullWidth margin="normal" />
-              <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                <Button variant="contained" color="primary" onClick={handleSave}>
-                  Save
+                <Button 
+                  variant="contained" 
+                  style={{ backgroundColor: 'red', color: 'white' }} 
+                  onClick={handleDelete}
+                >
+                  Ditolak
                 </Button>
-                <Button variant="contained" color="secondary" onClick={handleDelete}>
-                  Delete
-                </Button>
-                <Button variant="contained" onClick={handleClose}>
-                  Cancel
+
+                <Button 
+                  variant="contained" 
+                  style={{ backgroundColor: 'blue', color: 'white' }} 
+                  onClick={handleSave}
+                >
+                  Diterima
                 </Button>
               </Box>
             </Box>
