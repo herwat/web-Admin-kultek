@@ -107,7 +107,7 @@ const columns = [
               <TextField label="Nama" defaultValue={row.original.Nama} fullWidth margin="normal" />
               <TextField label="Jenis Bisnis" defaultValue={row.original.JenisBisnis} fullWidth margin="normal" />
               <IonItem>
-                <IonLabel position="stacked">Upload Image</IonLabel>
+                <IonLabel position="stacked">Upload Image/Logo UMKM</IonLabel>
                 <input type="file" accept="image/*" onChange={handleImageChange} />
               </IonItem>
               {imageName && (
@@ -117,6 +117,7 @@ const columns = [
                   </IonLabel>
                 </IonItem>
               )}
+              <TextField label="Products" defaultValue={row.original.Nama} fullWidth margin="normal" />
               <TextField label="Status" defaultValue={row.original.Status ? 'Diterima' : 'Ditolak'} fullWidth margin="normal" />
               <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
