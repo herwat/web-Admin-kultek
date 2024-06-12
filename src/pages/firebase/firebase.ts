@@ -2,7 +2,7 @@
  * @Author: Your name
  * @Date:   2024-05-28 10:32:00
  * @Last Modified by:   Your name
- * @Last Modified time: 2024-06-05 06:09:44
+ * @Last Modified time: 2024-06-12 14:03:53
  */
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -17,13 +17,13 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDhE7U9J1R8TOQ-MDNon8rG_rAahlBCNao",
-  authDomain: "adminkultek.firebaseapp.com",
-  projectId: "adminkultek",
-  storageBucket: "adminkultek.appspot.com",
-  messagingSenderId: "55676551569",
-  appId: "1:55676551569:web:3eb117b32757881a355a30",
-  measurementId: "G-2CH2TTYTHC"
+  apiKey: "AIzaSyCu49-YgLZvwqZFo1rP-mpNqydk6t9bnSw",
+  authDomain: "kuliner-teknik-v1.firebaseapp.com",
+  projectId: "kuliner-teknik-v1",
+  storageBucket: "kuliner-teknik-v1.appspot.com",
+  messagingSenderId: "30054855812",
+  appId: "1:30054855812:web:6193ca6905d3487ee07ed1",
+  measurementId: "G-BZ0BS5REWZ"
 };
 
 // Initialize Firebase
