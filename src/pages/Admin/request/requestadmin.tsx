@@ -13,9 +13,13 @@ import { Box, Button, MenuItem, Select, Typography, TextField, Modal, FormContro
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { data, Person } from './data';
+import { Person, data } from './data';
+import { getDownloadURL, getStorage, uploadBytes, ref } from "firebase/storage";
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 const columnHelper = createMRTColumnHelper<Person>();
+const storage = getStorage();
+const firestore = getFirestore(); // Inisialisasi Firestore
 
 const columns = [
   columnHelper.accessor('Nama', {
@@ -25,7 +29,7 @@ const columns = [
   columnHelper.accessor('JenisBisnis', {
     header: 'Jenis Bisnis',
     size: 20,
-    Cell: ({ row }) => {
+    Cell: ({ row }: { row: MRT_Row<Person> }) => {
       const [jenisBisnis, setJenisBisnis] = useState<string | null>(row.original.JenisBisnis);
       return (
         <Select
@@ -42,7 +46,7 @@ const columns = [
   columnHelper.accessor('Status', {
     header: 'Status',
     size: 300,
-    Cell: ({ row }) => {
+    Cell: ({ row }: { row: MRT_Row<Person> }) => {
       const [status, setStatus] = useState<boolean>(row.original.Status);
       return (
         <Button
@@ -72,29 +76,48 @@ const columns = [
       const handleImageOpen = () => setImageOpen(true);
       const handleImageClose = () => setImageOpen(false);
 
-      const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
           setImageName(file.name);
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setImage(reader.result as string);
-          };
-          reader.readAsDataURL(file);
+          const storageRef = ref(storage, 'admin_upload/' + file.name);
+          
+          try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setImage(downloadURL);
+          } catch (error) {
+            console.error('Error uploading image: ', error);
+          }
         }
       };
 
-      const handleSave = () => {
-        // Implement save logic here
+      const handleSave = async () => {
+        // Simpan data ke Firestore
+        try {
+          const docRef = await addDoc(collection(firestore, 'requests'), {
+            Nama: row.original.Nama,
+            JenisBisnis: row.original.JenisBisnis,
+            Status: row.original.Status,
+            email: row.original.email,
+          });
+          console.log('Document written with ID: ', docRef.id);
+        } catch (error) {
+          console.error('Error adding document: ', error);
+        }
+
         handleClose();
         alert('request UMKM diterima');
       };
 
       const handleDelete = () => {
-        // Implement delete logic here
         handleClose();
         alert('request UMKM ditolak');
       };
+
+      function setPhoto(result: string) {
+        throw new Error('Function not implemented.');
+      }
 
       return (
         <>
@@ -125,7 +148,22 @@ const columns = [
               <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <IonItem>
                 <IonLabel position="stacked">Upload Image/Logo UMKM</IonLabel>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <input 
+                type="file"
+                accept=".png, .jpg, .jpeg, .gif"
+                onChange={(e) => {
+                  const file = e.target.files && e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      if (e.target && typeof e.target.result === 'string') {
+                        setPhoto(e.target.result);
+                      }
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                />
               </IonItem>
               {imageName && (
                 <IonItem>
