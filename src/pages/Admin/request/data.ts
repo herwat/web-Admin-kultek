@@ -1,25 +1,34 @@
 /**
  * @Author: Your name
- * @Date:   2024-05-28 10:32:00
+ * @Date:   2024-06-11 13:33:43
  * @Last Modified by:   Your name
- * @Last Modified time: 2024-06-10 19:03:41
+ * @Last Modified time: 2024-06-16 17:05:55
  */
+import { Firestore, DocumentReference, doc } from "firebase/firestore";
+
 export type JenisBisnis = 'Warung Makanan' | 'Warung Berjalan' | null;
 
 export type Person = {
+  id: string;
+  Products: string;
+  Alamat: string;
+  NoHp: string;
   Nama: string;
   JenisBisnis: JenisBisnis;
-  Status: boolean; 
+  Status: boolean;
   email: string;
 };
 
-// data.ts
 export const data: Person[] = [
   {
     Nama: 'Warung Soto Ayam',
     JenisBisnis: null,
-    Status: true, 
+    Status: true,
     email: 'warung.soto.ayam@gmail.com',
+    Products: '',
+    Alamat: '',
+    NoHp: '',
+    id: 'some-id',  // Assuming you have an ID to work with
   },
   // Tambahkan data lainnya
 ];
@@ -35,5 +44,3 @@ if (!validateEmails(data)) {
 }
 
 console.log('All emails are valid.');
-
-

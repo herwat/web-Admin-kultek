@@ -15,7 +15,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Person, data } from './data';
 import { getDownloadURL, getStorage, uploadBytes, ref } from "firebase/storage";
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 
 const columnHelper = createMRTColumnHelper<Person>();
 const storage = getStorage();
@@ -81,7 +81,7 @@ const columns = [
         if (file) {
           setImageName(file.name);
           const storageRef = ref(storage, 'admin_upload/' + file.name);
-          
+
           try {
             await uploadBytes(storageRef, file);
             const downloadURL = await getDownloadURL(storageRef);
@@ -93,17 +93,16 @@ const columns = [
       };
 
       const handleSave = async () => {
-        // Simpan data ke Firestore
         try {
-          const docRef = await addDoc(collection(firestore, 'requests'), {
+          await updateDoc(doc(firestore, 'requests', row.original.id), {
             Nama: row.original.Nama,
             JenisBisnis: row.original.JenisBisnis,
             Status: row.original.Status,
             email: row.original.email,
           });
-          console.log('Document written with ID: ', docRef.id);
+          console.log('Document updated with ID: ', row.original.id);
         } catch (error) {
-          console.error('Error adding document: ', error);
+          console.error('Error updating document: ', error);
         }
 
         handleClose();
@@ -114,10 +113,6 @@ const columns = [
         handleClose();
         alert('request UMKM ditolak');
       };
-
-      function setPhoto(result: string) {
-        throw new Error('Function not implemented.');
-      }
 
       return (
         <>
@@ -142,27 +137,16 @@ const columns = [
                   <MenuItem value="Warung Berjalan">Warung Berjalan</MenuItem>
                 </Select>
               </FormControl>
-              <TextField label="Products" defaultValue={row.original.Nama} fullWidth margin="normal" />
-              <TextField label="Alamat" defaultValue={row.original.Status} fullWidth margin="normal" />
-              <TextField label="No.Hp" defaultValue={row.original.email} fullWidth margin="normal" />
+              <TextField label="Products" defaultValue={row.original.Products} fullWidth margin="normal" />
+              <TextField label="Alamat" defaultValue={row.original.Alamat} fullWidth margin="normal" />
+              <TextField label="No.Hp" defaultValue={row.original.NoHp} fullWidth margin="normal" />
               <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
               <IonItem>
                 <IonLabel position="stacked">Upload Image/Logo UMKM</IonLabel>
-                <input 
-                type="file"
-                accept=".png, .jpg, .jpeg, .gif"
-                onChange={(e) => {
-                  const file = e.target.files && e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                      if (e.target && typeof e.target.result === 'string') {
-                        setPhoto(e.target.result);
-                      }
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
+                <input
+                  type="file"
+                  accept=".png, .jpg, .jpeg, .gif"
+                  onChange={handleImageChange}
                 />
               </IonItem>
               {imageName && (
@@ -173,17 +157,17 @@ const columns = [
                 </IonItem>
               )}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                <Button 
-                  variant="contained" 
-                  style={{ backgroundColor: 'red', color: 'white' }} 
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: 'red', color: 'white' }}
                   onClick={handleDelete}
                 >
                   Ditolak
                 </Button>
 
-                <Button 
-                  variant="contained" 
-                  style={{ backgroundColor: 'blue', color: 'white' }} 
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: 'blue', color: 'white' }}
                   onClick={handleSave}
                 >
                   Diterima
@@ -268,16 +252,16 @@ const requestadmin: React.FC = () => {
 
   return (
     <>
-    <MenuSlideAdmin />
-    <IonPage className="Dash">
-      <IonHeader>
-        <ToolbarAdmin pageName="Request" imageLink="https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png" />
-      </IonHeader>
-      <div className="table-container">
-        <MaterialReactTable table={table} />
-      </div>
-    </IonPage>
-  </>
+      <MenuSlideAdmin />
+      <IonPage className="Dash">
+        <IonHeader>
+          <ToolbarAdmin pageName="Request" imageLink="https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png" />
+        </IonHeader>
+        <div className="table-container">
+          <MaterialReactTable table={table} />
+        </div>
+      </IonPage>
+    </>
   );
 };
 
