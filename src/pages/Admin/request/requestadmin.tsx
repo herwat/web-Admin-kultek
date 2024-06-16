@@ -268,16 +268,16 @@ const requestadmin: React.FC = () => {
 
   return (
     <>
-      <MenuSlideAdmin />
-      <IonPage className="Dash">
-        <IonHeader className="Dash">
-          <ToolbarAdmin pageName="Request" imageLink="https://i.pinimg.com/564x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg" />
-        </IonHeader>
-        <div className="table-container">
-          <MaterialReactTable table={table} />
-        </div>
-      </IonPage>
-    </>
+    <MenuSlideAdmin />
+    <IonPage className="Dash">
+      <IonHeader>
+        <ToolbarAdmin pageName="Request" imageLink="https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png" />
+      </IonHeader>
+      <div className="table-container">
+        <MaterialReactTable table={table} />
+      </div>
+    </IonPage>
+  </>
   );
 };
 

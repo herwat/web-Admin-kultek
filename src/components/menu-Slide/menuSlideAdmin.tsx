@@ -22,7 +22,7 @@ function MenuSlideAdmin() {
                 </IonHeader>
                 <IonContent >
                     <IonList>     
-                         <MenuItem iconItem={homeOutline} iconItemFill={home} content='Home' route='/myadmin' />
+                         <MenuItem iconItem={home} iconItemFill={home} content='Home' route='/myadmin' />
                          <MenuItem iconItem={speedometer} iconItemFill={speedometer} content='Dashboard' route='dashboard' />
                          <MenuItem iconItem={paperPlane} iconItemFill={paperPlane} content='Request' route='request' />
                        

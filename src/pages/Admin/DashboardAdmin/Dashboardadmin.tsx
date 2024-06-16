@@ -221,11 +221,8 @@ const Dashboardadmin: React.FC = () => {
     <>
       <MenuSlideAdmin />
       <IonPage className="Dash">
-        <IonHeader className="Dash">
-          <ToolbarAdmin
-            pageName="Dashboard"
-            imageLink="https://i.pinimg.com/564x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg"
-          />
+        <IonHeader>
+          <ToolbarAdmin pageName="Dashboard" imageLink="https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png" />
         </IonHeader>
         <div className="table-container">
           <MaterialReactTable table={table} />
