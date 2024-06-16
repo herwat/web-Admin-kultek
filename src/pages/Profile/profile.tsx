@@ -18,7 +18,7 @@ import {
 } from "@ionic/react";
 import "./profile.css";
 import userIcon from "../../Assets/man.png";
-import Toolbar from "../../components/toolbar/toolbar";
+import ToolbarAdmin from "../../components/toolbar/toolbarAdmin";
 
 const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -50,10 +50,9 @@ const Profile: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <Toolbar
-          pageName="Pengaturan Profile"
-          imageLink="https://i.pinimg.com/564x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg"
-        />
+      <IonHeader>
+          <ToolbarAdmin pageName="Pengaturan Profile" imageLink="https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png" />
+        </IonHeader>
       </IonHeader>
       <IonContent className="isi">
         <IonGrid>
