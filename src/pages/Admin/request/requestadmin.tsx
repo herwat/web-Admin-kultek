@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonHeader, IonPage, IonItem, IonLabel, IonImg, IonButton } from '@ionic/react';
+import { IonHeader, IonPage, IonItem, IonLabel, IonImg, IonButton, IonContent } from '@ionic/react';
 import ToolbarAdmin from '../../../components/toolbar/toolbarAdmin';
 import MenuSlideAdmin from '../../../components/menu-Slide/menuSlideAdmin';
 import './request.css';
@@ -253,13 +253,15 @@ const requestadmin: React.FC = () => {
   return (
     <>
       <MenuSlideAdmin />
-      <IonPage className="Dash">
+      <IonPage id="main-content" className="Dash">
         <IonHeader>
           <ToolbarAdmin pageName="Request" imageLink="https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png" />
         </IonHeader>
-        <div className="table-container">
-          <MaterialReactTable table={table} />
-        </div>
+        <IonContent>
+          <div className="table-container">
+            <MaterialReactTable table={table} />
+          </div>
+        </IonContent>
       </IonPage>
     </>
   );
