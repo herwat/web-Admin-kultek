@@ -6,14 +6,19 @@
  */
 
 .Dash {
-    --background-color: aliceblue;
+  --background-color: white;
 }
 
 .IonHeader.Dash {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .table-container {
-    flex: 1;
-    overflow: auto;
+  overflow: auto;
+  height: 100%;
+}
+
+.MuiPaper-root,
+.MuiTableContainer-root {
+  height: 100%;
 }

@@ -1,146 +1,285 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_Row,
   createMRTColumnHelper,
 } from 'material-react-table';
-import { Box, Button, Link, MenuItem, Select, Modal, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  MenuItem,
+  Select,
+  Modal,
+  TextField,
+  Typography,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { jsPDF } from 'jspdf'; //or use your library of choice here
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { data, type Person } from './data';
-import { useHistory } from 'react-router';
+import { Mitra } from './data';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { firestore, storage } from '../../firebase/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonImg,
+  IonItem,
+  IonLabel,
+  IonPage,
+} from '@ionic/react';
+import { getAllMitras } from './api';
+import MenuSlideAdmin from '../../../components/menu-Slide/menuSlideAdmin';
+import ToolbarAdmin from '../../../components/toolbar/toolbarAdmin';
+import './Dashboardadmin.css';
 
-const columnHelper = createMRTColumnHelper<Person>();
+const columnHelper = createMRTColumnHelper<Mitra>();
 
 const columns = [
-  columnHelper.accessor('Nama', {
+  columnHelper.accessor('name', {
     header: 'Nama',
-    size: 120,
+    size: 300,
   }),
-  columnHelper.accessor('JenisBisnis', {
+  columnHelper.accessor('type', {
     header: 'Jenis Bisnis',
-    size: 20,
-    Cell: ({ row }) => {
-      const [jenisBisnis, setJenisBisnis] = useState<string | null>(row.original.JenisBisnis);
+    Cell: ({ row }: { row: MRT_Row<Mitra> }) => {
+      const [jenisBisnis, setJenisBisnis] = useState<string | null>(
+        row.original.type
+      );
       return (
         <Select
           value={jenisBisnis || ''}
-          onChange={(event) => setJenisBisnis(event.target.value)}
+          onChange={(event) => setJenisBisnis(event.target.value as string)}
+          fullWidth
         >
-          <MenuItem value={'Warung Makanan'}>Warung Makanan</MenuItem>
-          <MenuItem value={'Warung Berjalan'}>Warung Berjalan</MenuItem>
+          <MenuItem value={'offline'}>Offline</MenuItem>
+          <MenuItem value={'online'}>Online</MenuItem>
         </Select>
       );
     },
   }),
-  columnHelper.accessor('Status', {
-    header: 'Status',
-    size: 300,
-    Cell: ({ row }) => {
-      const [status, setStatus] = useState(row.original.Status);
+  columnHelper.accessor('whatsapp', {
+    header: 'Nomor HP',
+    size: 150,
+    Cell: ({ row }: { row: MRT_Row<Mitra> }) => {
+      const [whatsapp, setWhatsapp] = useState<string>(row.original.whatsapp);
       return (
         <Button
-          variant="contained"
-          color={status ? 'success' : 'error'}
-          onClick={() => setStatus(!status)}
+          variant='contained'
+          color={whatsapp ? 'success' : 'error'}
+          onClick={() => setWhatsapp(whatsapp)}
         >
-          {status ? 'Aktif' : 'Tidak Aktif'}
+          0{whatsapp}
         </Button>
       );
     },
   }),
-  columnHelper.accessor('email', {
-    header: 'Email',
+  columnHelper.accessor('address', {
+    header: 'Alamat',
+    size: 300,
+    Cell: ({ row }: { row: MRT_Row<Mitra> }) => {
+      const [address, setAddress] = useState(row.original.address.text);
+      console.log(address);
+      return (
+        <Button
+          variant='contained'
+          color={address ? 'success' : 'error'}
+          onClick={() => setAddress(address)}
+        >
+          {address}
+        </Button>
+      );
+    },
   }),
-  columnHelper.accessor('email', {
+  {
+    accessorKey: 'aksi',
     header: 'Aksi',
-    Cell: ({ row }) => {
+    Cell: ({ row }: { row: MRT_Row<Mitra> }) => {
       const [open, setOpen] = useState(false);
+      const [imageOpen, setImageOpen] = useState(false);
+      const [imageName, setImageName] = useState<string | null>(null);
+      const [image, setImage] = useState<string>('');
 
       const handleOpen = () => setOpen(true);
       const handleClose = () => setOpen(false);
+      const handleImageOpen = () => setImageOpen(true);
+      const handleImageClose = () => setImageOpen(false);
 
-      const [confirmOpen, setConfirmOpen] = useState(false);
-      const handleConfirmOpen = () => setConfirmOpen(true);
-      const handleConfirmClose = () => setConfirmOpen(false);
+      const handleImageChange = async (
+        event: React.ChangeEvent<HTMLInputElement>
+      ) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          setImageName(file.name);
+          const storageRef = ref(storage, 'admin_upload/' + file.name);
 
-      const handleSave = () => {
-        // Implement save logic here
-        handleClose();
-        alert('Data berhasil diperbarui');
+          try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setImage(downloadURL);
+          } catch (error) {
+            console.error('Error uploading image: ', error);
+          }
+        }
       };
 
-      const handleDelete = () => {
-        // Implement delete logic here
-        handleConfirmClose();
+      const handleApprove = async (id: string) => {
+        try {
+          const requestDocRef = doc(firestore, 'requests', id);
+          await updateDoc(requestDocRef, {
+            status: 'diterima',
+          });
+          console.log('Document updated with ID: ', id);
+        } catch (error) {
+          console.error('Error updating document: ', error);
+        }
+
         handleClose();
+        alert('request UMKM diterima');
+      };
+
+      const handleReject = async (id: string) => {
+        try {
+          const requestDocRef = doc(firestore, 'requests', id);
+          await updateDoc(requestDocRef, {
+            status: 'ditolak',
+          });
+          console.log('Document updated with ID: ', id);
+        } catch (error) {
+          console.error('Error updating document: ', error);
+        }
+
+        handleClose();
+        alert('request UMKM ditolak');
       };
 
       return (
         <>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpen}
-          >
-            Detail
+          <Button variant='contained' color='primary' onClick={handleOpen}>
+            Lihat Detail
           </Button>
           <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby='modal-modal-title'
+            aria-describedby='modal-modal-description'
           >
             <Box sx={{ ...modalStyle }}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
+              <Typography id='modal-modal-title' variant='h6' component='h2'>
                 Detail Data
               </Typography>
-              <TextField label="Nama" defaultValue={row.original.Nama} fullWidth margin="normal" />
-              <TextField label="Jenis Bisnis" defaultValue={row.original.JenisBisnis} fullWidth margin="normal" />
-              <TextField label="Status" defaultValue={row.original.Status ? 'Aktif' : 'Tidak Aktif'} fullWidth margin="normal" />
-              <TextField label="Email" defaultValue={row.original.email} fullWidth margin="normal" />
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                <Button variant="contained" color="primary" onClick={handleSave}>
-                  Save
-                </Button>
-                <Button variant="contained" color="secondary" onClick={handleConfirmOpen}>
-                  Delete
-                </Button>
-                <Button variant="contained" onClick={handleClose}>
+              <TextField
+                label='Nama Bisnis'
+                defaultValue={row.original.name}
+                fullWidth
+                margin='normal'
+              />
+              <FormControl fullWidth margin='normal'>
+                <InputLabel id='jenis-bisnis-label'>Jenis Bisnis</InputLabel>
+                <Select
+                  labelId='jenis-bisnis-label'
+                  id='jenis-bisnis'
+                  defaultValue={row.original.type}
+                  label='Jenis Bisnis'
+                >
+                  <MenuItem value={'offline'}>Offline</MenuItem>
+                  <MenuItem value={'online'}>Online</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label='Alamat'
+                defaultValue={row.original.address.text}
+                fullWidth
+                margin='normal'
+                type='text'
+              />
+              <TextField
+                label='Link Google Maps'
+                defaultValue={row.original.address.gmap}
+                fullWidth
+                margin='normal'
+                type='text'
+              />
+              <TextField
+                label='No.Hp'
+                defaultValue={`0${row.original.whatsapp}`}
+                fullWidth
+                margin='normal'
+              />
+              <IonItem>
+                <IonLabel position='stacked'>Upload Image/Logo UMKM</IonLabel>
+                <input
+                  type='file'
+                  accept='.png, .jpg, .jpeg, .gif'
+                  onChange={handleImageChange}
+                />
+              </IonItem>
+              {imageName && (
+                <IonItem>
+                  <IonLabel
+                    onClick={handleImageOpen}
+                    style={{ cursor: 'pointer', color: 'blue' }}
+                  >
+                    {imageName}
+                  </IonLabel>
+                </IonItem>
+              )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: 2,
+                }}
+              >
+                <Button variant='contained' onClick={handleClose}>
                   Cancel
                 </Button>
+                <Button
+                  variant='contained'
+                  style={{ backgroundColor: 'red', color: 'white' }}
+                  onClick={() => handleReject(row.original.id)}
+                >
+                  Ditolak
+                </Button>
+                <Button
+                  variant='contained'
+                  style={{ backgroundColor: 'green', color: 'white' }}
+                  onClick={() => handleApprove(row.original.id)}
+                >
+                  Diterima
+                </Button>
               </Box>
-              <Modal
-                open={confirmOpen}
-                onClose={handleConfirmClose}
-                aria-labelledby="confirm-modal-title"
-                aria-describedby="confirm-modal-description"
-              >
-                <Box sx={{ ...modalStyle }}>
-                  <Typography id="confirm-modal-title" variant="h6" component="h2">
-                    Konfirmasi Hapus
-                  </Typography>
-                  <Typography id="confirm-modal-description" sx={{ mt: 2 }}>
-                    Apakah Anda yakin ingin menghapus data baris ini?
-                  </Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                    <Button variant="contained" color="secondary" onClick={handleDelete}>
-                      Yes
-                    </Button>
-                    <Button variant="contained" onClick={handleConfirmClose}>
-                      No
-                    </Button>
-                  </Box>
-                </Box>
-              </Modal>
+            </Box>
+          </Modal>
+          <Modal
+            open={imageOpen}
+            onClose={handleImageClose}
+            aria-labelledby='image-modal-title'
+            aria-describedby='image-modal-description'
+          >
+            <Box
+              sx={{
+                ...modalStyle,
+                width: '80%',
+                maxHeight: '80%',
+                overflow: 'auto',
+              }}
+            >
+              <Typography id='image-modal-title' variant='h6' component='h2'>
+                Image Detail
+              </Typography>
+              <IonImg src={image} />
+              <IonButton onClick={handleImageClose}>Close</IonButton>
             </Box>
           </Modal>
         </>
       );
     },
-  }),
+  },
 ];
 
 const modalStyle = {
@@ -156,7 +295,17 @@ const modalStyle = {
 };
 
 const Dashboardadmin = () => {
-  const handleExportRows = (rows: MRT_Row<Person>[]) => {
+  const [data, setData] = useState<Mitra[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const mitras = await getAllMitras();
+      setData(mitras);
+    };
+
+    fetchData();
+  }, []);
+  const handleExportRows = (rows: MRT_Row<Mitra>[]) => {
     const doc = new jsPDF();
     const tableData = rows.map((row) => Object.values(row.original));
     const tableHeaders = columns.map((c) => c.header);
@@ -217,151 +366,24 @@ const Dashboardadmin = () => {
     ),
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      <MenuSlideAdmin />
+      <IonPage id='main-content' className='Dash'>
+        <IonHeader>
+          <ToolbarAdmin
+            pageName='Mitra'
+            imageLink='https://www.pngmart.com/files/21/Admin-Profile-PNG-Photo.png'
+          />
+        </IonHeader>
+        <IonContent>
+          <div className='table-container'>
+            <MaterialReactTable table={table} />
+          </div>
+        </IonContent>
+      </IonPage>
+    </>
+  );
 };
 
 export default Dashboardadmin;
-
-// import {
-//     MaterialReactTable,
-//     useMaterialReactTable,
-//     type MRT_Row,
-//     createMRTColumnHelper,
-//   } from 'material-react-table';
-//   import { Box, Button, Link, MenuItem, Select } from '@mui/material';
-//   import FileDownloadIcon from '@mui/icons-material/FileDownload';
-//   import { jsPDF } from 'jspdf'; //or use your library of choice here
-//   import autoTable from 'jspdf-autotable';
-//   import { data, type Person } from './data';
-// import { useState } from 'react';
-// import { useHistory } from 'react-router';
-  
-//   const columnHelper = createMRTColumnHelper<Person>();
-  
-//   const columns = [
-//     columnHelper.accessor('Nama', {
-//       header: 'Nama',
-//       size: 120,
-//     }),
-//     columnHelper.accessor('JenisBisnis', {
-//       header: 'Jenis Bisnis',
-//       size: 20,
-//       Cell: ({ row }) => {
-//         const [jenisBisnis, setJenisBisnis] = useState<string | null>(row.original.JenisBisnis);
-//         return (
-//           <Select
-//             value={jenisBisnis || ''}
-//             onChange={(event) => setJenisBisnis(event.target.value)}
-//           >
-//             <MenuItem value={'Warung Makanan'}>Warung Makanan</MenuItem>
-//             <MenuItem value={'Warung Berjalan'}>Warung Berjalan</MenuItem>
-//           </Select>
-//         );
-//       },
-//     }),
-//     columnHelper.accessor('Status', {
-//       header: 'Status',
-//       size: 300,
-//       Cell: ({ row }) => {
-//         const [status, setStatus] = useState(row.original.Status);
-//         return (
-//           <Button
-//             variant="contained"
-//             color={status ? 'success' : 'error'}
-//             onClick={() => setStatus(!status)}
-//           >
-//             {status ? 'Aktif' : 'Tidak Aktif'}
-//           </Button>
-//         );
-//       },
-//     }),
-//     columnHelper.accessor('email', {
-//       header: 'Email',
-//     }),
-//     columnHelper.accessor('email', {
-//       header: 'Aksi',
-//       Cell: ({ row }) => {
-//         const history = useHistory();
-//         return (
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             onClick={() => history.push('/home')}
-//           >
-//             Detail
-//           </Button>
-//         );
-//       },
-//     }),
-//   ];
-
-//   const Dashboardadmin = () => {
-//     const handleExportRows = (rows: MRT_Row<Person>[]) => {
-//       const doc = new jsPDF();
-//       const tableData = rows.map((row) => Object.values(row.original));
-//       const tableHeaders = columns.map((c) => c.header);
-  
-//       autoTable(doc, {
-//         head: [tableHeaders],
-//         body: tableData,
-//       });
-  
-//       doc.save('mrt-pdf-example.pdf');
-//     };
-  
-//     const table = useMaterialReactTable({
-//       columns,
-//       data,
-//       enableRowSelection: true,
-//       columnFilterDisplayMode: 'popover',
-//       paginationDisplayMode: 'pages',
-//       positionToolbarAlertBanner: 'bottom',
-//       renderTopToolbarCustomActions: ({ table }) => (
-//         <Box
-//           sx={{
-//             display: 'flex',
-//             gap: '16px',
-//             padding: '8px',
-//             flexWrap: 'wrap',
-//           }}
-//         >
-//           <Button
-//             disabled={table.getPrePaginationRowModel().rows.length === 0}
-//             //export all rows, including from the next page, (still respects filtering and sorting)
-//             onClick={() =>
-//               handleExportRows(table.getPrePaginationRowModel().rows)
-//             }
-//             startIcon={<FileDownloadIcon />}
-//           >
-//             Export All Rows
-//           </Button>
-//           <Button
-//             disabled={table.getRowModel().rows.length === 0}
-//             //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
-//             onClick={() => handleExportRows(table.getRowModel().rows)}
-//             startIcon={<FileDownloadIcon />}
-//           >
-//             Export Page Rows
-//           </Button>
-//           <Button
-//             disabled={
-//               !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-//             }
-//             //only export selected rows
-//             onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-//             startIcon={<FileDownloadIcon />}
-//           >
-//             Export Selected Rows
-//           </Button>
-//         </Box>
-//       ),
-//     });
-  
-//     return <MaterialReactTable table={table} />;
-//   };
-  
-//   export default Dashboardadmin;
-  
-
-
-

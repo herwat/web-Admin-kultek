@@ -4,36 +4,33 @@
  * @Last Modified by:   Your name
  * @Last Modified time: 2024-06-10 19:03:41
  */
-export type JenisBisnis = 'Warung Makanan' | 'Warung Berjalan' | null;
 
-export type Person = {
-  Nama: string;
-  JenisBisnis: JenisBisnis;
-  Status: boolean; 
-  email: string;
+import { Address } from '../request/data';
+
+export type Mitra = {
+  id: string;
+  name: string;
+  schedule?: Schedule;
+  image?: string;
+  products?: Product[];
+  rating: number;
+  address: Address;
+  is_open: boolean;
+  whatsapp: string;
+  type: string;
 };
 
-// data.ts
-export const data: Person[] = [
-  {
-    Nama: 'Warung Soto Ayam',
-    JenisBisnis: null,
-    Status: true, 
-    email: 'warung.soto.ayam@gmail.com',
-  },
-  // Tambahkan data lainnya
-];
+export type Schedule = {
+  [day: string]: {
+    open_time: string;
+    close_time: string;
+  };
+};
 
-// Fungsi untuk memvalidasi bahwa semua email menggunakan domain gmail.com
-function validateEmails(persons: Person[]): boolean {
-  return persons.every(person => person.email.endsWith('@gmail.com'));
-}
-
-// Validasi data
-if (!validateEmails(data)) {
-  throw new Error('All emails must use the domain gmail.com');
-}
-
-console.log('All emails are valid.');
-
-
+export type Product = {
+  id: string;
+  name: string;
+  desc?: string;
+  price: string;
+  image?: string;
+};
