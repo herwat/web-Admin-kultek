@@ -10,7 +10,7 @@ interface MenuItemProps {
     route: string;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ iconItem, iconItemFill, content, route }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ iconItem, content, route }) => {
     return (
         <IonItem button className='item-menu' routerLink={route}>
             <div className='item-edit'>
